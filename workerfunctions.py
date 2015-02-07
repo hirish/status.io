@@ -26,6 +26,7 @@ def is_free(userid, location, accelerometer, ringer, call, calendar):
     if accelerometer == 1 or ringer == 0 or call == 1 or calendar == 1:
         status = 1
 
-    Redis().set(userid, status)
-
+    r = Redis()
+    r.set(userid, status)
+    r.expire(userid, 10)
     return
