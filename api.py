@@ -26,7 +26,7 @@ def jsonp(func):
 @jsonp
 def get_user(user_id):
     user = User.query.get(user_id)
-    json
+    return jsonify(user.output())
 
 @blueprint.route('/post/<user_id>', methods=["POST"])
 @jsonp
@@ -50,4 +50,4 @@ def post_values(user_id):
 @blueprint.route('/datapoints')
 def all_datapoints():
     datapoints = DataPoint.query.all()
-    return jsonify(datapoints = [datapoint.output() for datapoint in datapoints])
+    return jsonify([datapoint.output() for datapoint in datapoints])
