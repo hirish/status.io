@@ -1,5 +1,8 @@
 from flask import *
 from functools import wraps
+from workerfunctions import is_free
+from redis import Redis
+from rq import Queue
 
 from models import *
 
@@ -28,15 +31,19 @@ def get_user(user_id):
 @blueprint.route('/post/<user_id>', methods=["POST"])
 @jsonp
 def post_values(user_id):
-    raw_data = request.json['data']
-    values = raw_data[::2]
-    keys = raw_data[1::2]
+    location = request.json['location']
+    accelerometer = request.json['accelerometer']
+    ringer = request.json['ringer']
+    call = request.json['call']
+    calendar = request.json['calendar']
 
-    user = User.query.get(user_id)
+    job = Queue(connection=Redis()).enqueue(is_free, user_id, location, accelerometer, ringer, call, calendar)
 
-    for value, key in zip(values, keys):
-        db.session.add(DataPoint(value, key, user))
-        db.session.commit()
+    # user = User.query.get(user_id)
+
+    # for value, key in zip(values, keys):
+    #     db.session.add(DataPoint(value, key, user))
+    #     db.session.commit()
     
     return "success"
 
