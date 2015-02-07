@@ -1,7 +1,7 @@
 from flask import *
 from functools import wraps
 
-from models import User
+from models import *
 
 blueprint = Blueprint('api', __name__)
 
@@ -23,4 +23,24 @@ def jsonp(func):
 @jsonp
 def get_user(user_id):
     user = User.query.get(user_id)
-    return jsonify(user = user.output())
+    json
+
+@blueprint.route('/post/<user_id>', methods=["POST"])
+@jsonp
+def post_values(user_id):
+    raw_data = request.json['data']
+    values = raw_data[::2]
+    keys = raw_data[1::2]
+
+    user = User.query.get(user_id)
+
+    for value, key in zip(values, keys):
+        db.session.add(DataPoint(value, key, user))
+        db.session.commit()
+    
+    return "success"
+
+@blueprint.route('/datapoints')
+def all_datapoints():
+    datapoints = DataPoint.query.all()
+    return jsonify(datapoints = [datapoint.output() for datapoint in datapoints])
