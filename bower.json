@@ -1,9 +1,0 @@
-{
-  "name": "statusio",
-  "author": "dummy",
-  "version": "0.0.0",
-  "dependencies": {
-    "jquery": "~1.9.0"
-  }
-}
-
