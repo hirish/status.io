@@ -4,11 +4,11 @@ from models import User
 with app.app_context():
     db.create_all()
 
-    henry = User('henry')
-    james = User('james')
-    adam  = User('adam')
-    neil  = User('neil')
-    kira  = User('kira')
+    henry = User('Mark Zuckerberg')
+    james = User('Larry Page')
+    adam  = User('Elon Musk')
+    neil  = User('Marissa Mayer')
+    kira  = User('Jack Dorsey')
 
     henry.friends = [james, adam]
     james.friends = [kira, henry, adam]

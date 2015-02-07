@@ -25,5 +25,5 @@ class User(db.Model):
         return {
             'id' : self.id,
             'name' : self.name,
-            'friends': [friend.id for friend in self.friends]
+            'friends': [{'name': friend.name, 'id': friend.id} for friend in self.friends]
         }
