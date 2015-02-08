@@ -36,10 +36,10 @@ def is_free(userid, entry):
     elif chrome == 1:
         status = 0
     # At home, not moving, less than 8 hours till next alarm - asleep
-    elif location == 0 and next_alarm < 480 and accelerometer == 0:
+    elif location == 0 and next_alarm < 480 and next_alarm != -1 and accelerometer == 0:
         status = 1
     # At home, more than 8 hours till next alarm - free
-    elif location == 0 and next_alarm > 480:
+    elif location == 0 and (next_alarm > 480 or next_alarm == -1):
         status = 0
     # At work in a meeting - busy
     elif location == 1 and calendar == 1:
