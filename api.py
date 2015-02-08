@@ -56,9 +56,36 @@ def post_values(user_id):
 @blueprint.route('/post/<user_id>/channel', methods=["POST"])
 @jsonp
 def post_value(user_id):
-    channelName = request.json['channel']
-    value = request.json['value']
+    try:
+        channelName = request.json['channel']
+        value = request.json['value']
+    except TypeError:
+        channelName = request.form['channel']
+        value = request.form['value']
+
+    if channelName == "chrome":
+        value = is_productive(value)
+        if value < 0:
+            # Couldn't classify
+            return
 
     r = Redis()
     r.hset(user_id, channelName, value)
     Queue(connection=r).enqueue(update_status, user_id)
+
+    return "Success"
+
+unproductiveWebsites = ["reddit", "facebook", "twitter"]
+productiveWebsites = ["google", "github", "gmail"]
+
+def is_productive(website):
+    print website
+    unproductive = len([w for w in unproductiveWebsites if website.find(w) >= 0]) > 0
+    productive = len([w for w in unproductiveWebsites if website.find(w) >= 0]) > 0
+
+    if productive:
+        return 0
+    elif unproductive:
+        return 1
+    else:
+        return -1
