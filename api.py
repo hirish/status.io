@@ -30,7 +30,7 @@ def get_user(user_id):
     for friend in user['friends']:
         status = r.get(friend['id'])
         if status is None:
-            friend['status'] = 2
+            friend['status'] = 1 #Yellow - unknown
         else:
             friend['status'] = int(status)
         pass
