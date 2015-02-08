@@ -32,7 +32,6 @@ def get_user(user_id):
     r = Redis()
     for friend in user['friends']:
         status = r.hget(friend['id'], 'status')
-        print "friendid", friend['id']
         if status is None:
             friend['status'] = 1 #Yellow - unknown
         else:
@@ -48,7 +47,7 @@ def post_values(user_id):
     silent = request.form['silent']
     accelerometer = request.form['accelerometer']
     on_call = request.form['onCall']
-    next_alarm_string = request.form['nextAlarm']
+    next_alarm_string = request.form.get('nextAlarm', "")
 
     if next_alarm_string == "":
         next_alarm = 0
