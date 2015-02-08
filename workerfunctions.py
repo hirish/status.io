@@ -22,7 +22,7 @@ def is_free(userid, entry):
     silent = entry.get('silent', 0)
     on_call = entry.get('on_call', 0)
     calendar = entry.get('calendar', 0)
-    location = entry.get('location', 0)
+    location = entry.get('location', 1)
     next_alarm = entry.get('next_alarm', 240)
     chrome = entry.get('chrome', 1)
 
