@@ -25,8 +25,17 @@ def jsonp(func):
 @blueprint.route('/get/<user_id>')
 @jsonp
 def get_user(user_id):
-    user = User.query.get(user_id)
-    return jsonify(user.output())
+    user = User.query.get(user_id).output()
+    r = Redis()
+    for friend in user['friends']:
+        status = r.get(friend['id'])
+        if status is None:
+            friend['status'] = 2
+        else:
+            friend['status'] = int(status)
+        pass
+
+    return jsonify(user)
 
 @blueprint.route('/post/<user_id>', methods=["POST"])
 @jsonp
