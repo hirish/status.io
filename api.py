@@ -40,11 +40,11 @@ def get_user(user_id):
 @blueprint.route('/post/<user_id>', methods=["POST"])
 @jsonp
 def post_values(user_id):
-    location = request.json['location']
-    accelerometer = request.json['accelerometer']
-    ringer = request.json['ringer']
-    call = request.json['call']
-    calendar = request.json['calendar']
+    location = request.form['location']
+    accelerometer = request.form['accelerometer']
+    ringer = request.form['ringer']
+    call = request.form['call']
+    calendar = request.form['calendar']
 
     job = Queue(connection=Redis()).enqueue(is_free, user_id, location, accelerometer, ringer, call, calendar)
 
