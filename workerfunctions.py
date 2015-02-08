@@ -8,26 +8,53 @@ import pickle
 
 def is_free(userid, entry):
     """
-        Input: entry contains
-        location (0:home, 1:work, 2:other)
-        accelerometer (0:stationary, 1:mobile)
-        ringer (0:mute, 1:loud)
+    Define user status (0 = free, 1=busy, 2=not sure)
+
+    Input: location (0:home, 1:work, 2:other)
+        acceller (0:stationary, 1:mobile)
+        silent (0:ringer on, 1:silent/vibrate)
         call (1: on call)
-        calendar (0:free, 0:busy)
+        calendar (0:free, 1:busy)
+        chrome (0:productive/other, 1:facebook)
+        alarm (time in minutes)
     """
     accelerometer = entry['accelerometer']
     silent = entry['silent']
     on_call = entry['on_call']
-    calendar = 0
+    calendar = entry['calendar']
+    location = entry['location']
+    next_alarm = entry['next_alarm']
 
+    # Default to not sure
     status = 2
 
-    # Define when free (no acceleration, ringer on, not on call, nothing scheduled)
-    if accelerometer == 0 and silent == 0 and on_call == 0 and calendar == 0:
-        status = 0
-    # Define when busy
-    if accelerometer == 1 or silent == 1 or on_call == 1 or calendar == 1:
+    # On a call - must be busy
+    if on_call == 1:
         status = 1
+    # On Facebook - must be free
+    elif chrome == 1:
+        status = 0
+    # At home, not moving, less than 8 hours till next alarm - asleep
+    elif location == 0 and next_alarm < 480 and accelerometer == 0:
+        status = 1
+    # At home, more than 8 hours till next alarm - free
+    elif location == 0 and next_alarm > 480:
+        status = 0
+    # At work in a meeting - busy
+    elif location == 1 and calendar == 1:
+        status = 1
+    # At work phone on silent - busy
+    elif location == 1 and sillent == 1:
+        status = 1
+    # Outside, phone on silent - busy
+    elif location == 2 and silent == 1:
+        status = 1
+    # Outside, at an event - busy
+    elif location == 2 and calendar == 1:
+        status = 1
+    # Outside, moving - free
+    elif location == 2 and accelerometer == 1:
+        status = 0
 
     r = Redis()
     r.hset(userid, 'status', status)
