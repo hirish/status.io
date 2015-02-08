@@ -1,6 +1,8 @@
+from dateutil import parser
 from flask import *
 from functools import wraps
 import time
+from datetime import datetime
 from workerfunctions import update_status
 from redis import Redis
 from rq import Queue
@@ -46,7 +48,12 @@ def post_values(user_id):
     silent = request.form['silent']
     accelerometer = request.form['accelerometer']
     on_call = request.form['onCall']
-    next_alarm = request.form['nextAlarm']
+    next_alarm_string = request.form['nextAlarm']
+
+    if next_alarm_string == "":
+        next_alarm = 0
+    else:
+        next_alarm = (parser.parse(next_alarm_string) - datetime.now()).total_seconds()/60
 
     r = Redis()
     r.hmset(user_id, {'silent': silent, 'accelerometer': accelerometer, 'on_call': on_call, 'next_alarm': next_alarm})
