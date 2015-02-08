@@ -18,12 +18,12 @@ def is_free(userid, entry):
         chrome (0:productive/other, 1:facebook)
         alarm (time in minutes)
     """
-    accelerometer = entry['accelerometer']
-    silent = entry['silent']
-    on_call = entry['on_call']
+    accelerometer = entry.get('accelerometer', 0)
+    silent = entry.get('silent', 0)
+    on_call = entry.get('on_call', 0)
     calendar = entry.get('calendar', 0)
-    location = entry['location']
-    next_alarm = entry['next_alarm']
+    location = entry.get('location', 0)
+    next_alarm = entry.get('next_alarm', 240)
     chrome = entry.get('chrome', 1)
 
     # Default to not sure
