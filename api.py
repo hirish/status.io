@@ -52,7 +52,10 @@ def post_values(user_id):
     if next_alarm_string == "":
         next_alarm = 0
     else:
-        next_alarm = (parser.parse(next_alarm_string) - datetime.now()).total_seconds()/60
+        try:
+            next_alarm = (parser.parse(next_alarm_string) - datetime.now()).total_seconds()/60
+        except ValueError:
+            next_alarm = 0
 
     r = Redis()
     r.hmset(user_id, {'silent': silent, 'accelerometer': accelerometer, 'on_call': on_call, 'next_alarm': next_alarm})

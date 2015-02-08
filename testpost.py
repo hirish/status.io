@@ -10,7 +10,7 @@ r = requests.post('http://localhost:5000/post/%i' % user,
                       'silent': 1,
                       'onCall': 0,
                       'calendar': 0,
-                      'nextAlarm': "Mon 13:10",
+                      'nextAlarm': "null",
                       'chrome': 1
                   }
 ).text
