@@ -3,12 +3,15 @@ from random import randint
 
 user = randint(1, 5)
 print user
-r = requests.post('http://178.62.45.23/post/%i' % user,
-                  json={
+r = requests.post('http://localhost:5000/post/%i' % user,
+                  data={
                       'location': 0,
                       'accelerometer': 0,
-                      'ringer': 1,
-                      'call': 0,
-                      'calendar': 0}
+                      'silent': 1,
+                      'onCall': 0,
+                      'calendar': 0,
+                      'nextAlarm': 40,
+                      'chrome': 1
+                  }
 ).text
 print r

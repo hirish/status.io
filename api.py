@@ -1,5 +1,6 @@
 from flask import *
 from functools import wraps
+import time
 from workerfunctions import update_status
 from redis import Redis
 from rq import Queue
@@ -29,12 +30,13 @@ def get_user(user_id):
     r = Redis()
     for friend in user['friends']:
         status = r.hget(friend['id'], 'status')
+        print "friendid", friend['id']
         if status is None:
             friend['status'] = 1 #Yellow - unknown
         else:
             friend['status'] = int(status)
         pass
-        friend['status_time'] = 0
+        friend['status_time'] = int(r.hget(friend['id'], 'status_time') or -1)
 
     return jsonify(user)
 
@@ -47,9 +49,8 @@ def post_values(user_id):
     next_alarm = request.form['nextAlarm']
 
     r = Redis()
-    r.hmset(user_id, 'silent', silent, 'accelerometer', accelerometer, 'on_call', on_call, 'next_alarm', next_alarm)
+    r.hmset(user_id, {'silent': silent, 'accelerometer': accelerometer, 'on_call': on_call, 'next_alarm': next_alarm})
     job = Queue(connection=r).enqueue(update_status, user_id)
-    
     return "success"
 
 
